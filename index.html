@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>StudySathi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #0f172a;
+            color: white;
+        }
+
+        .header {
+            text-align: center;
+            padding: 15px;
+            background: #1e293b;
+            font-size: 20px;
+        }
+
+        .chat {
+            height: 70vh;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .message {
+            margin: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 70%;
+        }
+
+        .user { background: #2563eb; margin-left: auto; }
+        .bot { background: #334155; }
+
+        .input-area {
+            display: flex;
+            padding: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+        }
+
+        button {
+            margin-left: 10px;
+            padding: 10px;
+            background: #7c3aed;
+            color: white;
+            border: none;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">StudySathi 🤖</div>
+
+<div class="chat" id="chat"></div>
+
+<div class="input-area">
+    <input type="text" id="question" placeholder="Ask your doubt...">
+    <button onclick="askAI()">Send</button>
+</div>
+
+<script>
+async function askAI() {
+    let q = document.getElementById("question").value;
+    let chat = document.getElementById("chat");
+
+    chat.innerHTML += `<div class="message user">${q}</div>`;
+
+    let res = await fetch("http://localhost:3000/ask", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ question: q })
+    });
+
+    let data = await res.json();
+
+    let ans = data.output?.[0]?.content?.[0]?.text || "No response";
+
+    chat.innerHTML += `<div class="message bot">${ans}</div>`;
+}
+</script>
+
+</body>
+</html>
